@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if exist README.md type README.md)",
+      "Bash(python -m uvicorn:*)",
+      "Bash(taskkill:*)",
+      "Bash(/c/Users/cxl/AppData/Local/Programs/Python/Python312/python.exe -m uvicorn:*)",
+      "Bash(netstat:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}

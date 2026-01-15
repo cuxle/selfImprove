@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机号登录测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #6B4EE6;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #6B4EE6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #5a3dd5;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .code-display {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .countdown {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 手机号登录测试</h1>
+        
+        <div class="form-group">
+            <label>API地址:</label>
+            <input type="text" id="apiUrl" value="http://192.168.1.3:8080/api/v1">
+        </div>
+
+        <div class="form-group">
+            <label>国家/地区:</label>
+            <select id="countryCode">
+                <option value="+86">🇨🇳 中国大陆 (+86)</option>
+                <option value="+852">🇭🇰 中国香港 (+852)</option>
+                <option value="+853">🇲🇴 中国澳门 (+853)</option>
+                <option value="+886">🇹🇼 中国台湾 (+886)</option>
+                <option value="+1">🇺🇸 美国 (+1)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>手机号:</label>
+            <input type="tel" id="phone" placeholder="请输入手机号（不含区号）" value="13912345678">
+        </div>
+
+        <button id="sendCodeBtn" onclick="sendCode()">获取验证码</button>
+        <div class="countdown" id="countdown"></div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <label>验证码:</label>
+            <input type="text" id="code" placeholder="请输入6位验证码" maxlength="6">
+        </div>
+
+        <button id="loginBtn" onclick="login()">登录</button>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        let countdownTimer = null;
+        let countdownSeconds = 0;
+
+        function showResult(message, isSuccess) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = 'result ' + (isSuccess ? 'success' : 'error');
+            resultDiv.style.display = 'block';
+        }
+
+        function startCountdown() {
+            countdownSeconds = 60;
+            const countdownDiv = document.getElementById('countdown');
+            const sendBtn = document.getElementById('sendCodeBtn');
+            sendBtn.disabled = true;
+
+            countdownTimer = setInterval(() => {
+                if (countdownSeconds > 0) {
+                    countdownDiv.textContent = `${countdownSeconds}秒后可重新发送`;
+                    countdownSeconds--;
+                } else {
+                    clearInterval(countdownTimer);
+                    countdownDiv.textContent = '';
+                    sendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        async function sendCode() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const countryCode = document.getElementById('countryCode').value;
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!phone) {
+                showResult('请输入手机号', false);
+                return;
+            }
+
+            const fullPhone = countryCode + phone;
+            console.log('发送验证码到:', fullPhone);
+
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/send-code`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone: fullPhone })
+                });
+
+                const data = await response.json();
+                console.log('API返回:', data);
+
+                if (response.ok) {
+                    let message = data.message || '验证码已发送';
+                    if (data.code) {
+                        message += `\n\n开发模式验证码: ${data.code}`;
+                        // 自动填充验证码
+                        document.getElementById('code').value = data.code;
+                    }
+                    showResult(message, true);
+                    startCountdown();
+                } else {
+                    showResult(`发送失败: ${data.detail || data.message || '未知错误'}`, false);
+                }
+            } catch (error) {
+                console.error('请求错误:', error);
+                showResult(`网络错误: ${error.message}`, false);
+            }
+        }
+
+        async function login() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const countryCode = document.getElementById('countryCode').value;
+            const phone = document.getElementById('phone').value.trim();
+            const code = document.getElementById('code').value.trim();
+
+            if (!phone) {
+                showResult('请输入手机号', false);
+                return;
+            }
+
+            if (!code) {
+                showResult('请输入验证码', false);
+                return;
+            }
+
+            const fullPhone = countryCode + phone;
+            console.log('登录手机号:', fullPhone, '验证码:', code);
+
+            try {
+                const response = await fetch(`${apiUrl}/auth/phone/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        phone: fullPhone,
+                        code: code 
+                    })
+                });
+
+                const data = await response.json();
+                console.log('登录返回:', data);
+
+                if (response.ok) {
+                    showResult(`登录成功！\nToken: ${data.access_token.substring(0, 50)}...`, true);
+                } else {
+                    showResult(`登录失败: ${data.detail || data.message || '未知错误'}`, false);
+                }
+            } catch (error) {
+                console.error('请求错误:', error);
+                showResult(`网络错误: ${error.message}`, false);
+            }
+        }
+
+        // 回车键提交
+        document.getElementById('phone').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendCode();
+        });
+
+        document.getElementById('code').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
