@@ -22,7 +22,7 @@ RUN sed -i 's|deb.debian.org|cdn-fastly.deb.debian.org|g' /etc/apt/sources.list 
 COPY requirements.txt .
 
 # 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制项目文件
 COPY . .
