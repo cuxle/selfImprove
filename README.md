@@ -186,6 +186,44 @@ flutter run -d ios       # iOS版
 - [ ] AI智能建议
 - [ ] 通知提醒
 
+## 开发环境设置
+
+### 快速开始
+
+运行开发环境设置脚本：
+
+```bash
+./setup-dev.sh
+```
+
+### 开发工具
+
+项目使用以下工具来保证代码质量：
+
+- **pytest**: 测试框架
+- **black**: 代码格式化
+- **flake8**: 代码检查
+- **mypy**: 类型检查
+- **pre-commit**: Git提交钩子
+
+### 开发命令
+
+```bash
+cd backend
+make help          # 显示所有可用命令
+make install-dev   # 安装开发依赖
+make test          # 运行测试
+make test-cov      # 运行测试并生成覆盖率报告
+make lint          # 代码质量检查
+make format        # 格式化代码
+make run           # 启动开发服务器
+```
+
+详细的开发文档请参考：
+- [DEVELOPMENT.md](DEVELOPMENT.md) - 开发环境设置指南
+- [CONTRIBUTING.md](CONTRIBUTING.md) - 贡献指南
+- [backend/tests/README.md](backend/tests/README.md) - 测试指南
+
 ## 部署指南
 
 ### 后端部署
