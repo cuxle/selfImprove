@@ -12,12 +12,29 @@ env.bak/
 venv.bak/
 backend/ssl/
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+
+# Code quality
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+dmypy.json
+
 # Docker
 docker-compose.override.yml
 
 # IDEs
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
 
 # OS
 .DS_Store
@@ -27,3 +44,14 @@ nul
 # Logs
 *.log
 backend/app/logs/
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*.log
+
