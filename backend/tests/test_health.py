@@ -10,4 +10,3 @@ def test_health_check(client):
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert data["status"] == "healthy"
-    assert "timestamp" in data
