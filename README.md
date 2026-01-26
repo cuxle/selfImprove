@@ -226,6 +226,21 @@ make run           # 启动开发服务器
 
 ## 部署指南
 
+### 云服务器部署
+
+**AWS EC2 部署（推荐）:**
+- 详细指南：[EC2_DEPLOYMENT.md](EC2_DEPLOYMENT.md)
+- 一键部署脚本：`./deploy-ec2.sh`
+- 适用于 AWS EC2 实例
+
+**AWS Lightsail 部署:**
+- 详细指南：[LIGHTSAIL_DEPLOY.md](LIGHTSAIL_DEPLOY.md)
+- 适用于小型应用
+
+**国内云服务器（阿里云/腾讯云）:**
+- 详细指南：[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
+- Docker 部署和传统部署方式
+
 ### 后端部署
 
 使用 Docker：
