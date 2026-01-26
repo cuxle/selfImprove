@@ -12,6 +12,8 @@ from app.config.database import Base, get_db
 
 
 # Create an in-memory SQLite database for testing
+# Using in-memory database provides test isolation and fast test execution
+# Each test gets a fresh database without affecting production data
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(

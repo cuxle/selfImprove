@@ -42,7 +42,8 @@ class TestCreateDiary:
 
     def test_create_diary_invalid_intensity(self, client, auth_headers, test_diary_data):
         """Test diary creation with invalid emotion intensity."""
-        test_diary_data["emotion_intensity"] = 15  # Out of range (1-10)
+        # Valid range is 1-10, testing with out-of-range value
+        test_diary_data["emotion_intensity"] = 15
         response = client.post(
             "/api/v1/diaries", json=test_diary_data, headers=auth_headers
         )
