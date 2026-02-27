@@ -227,6 +227,14 @@ flutter build ios --release
 4. 定期备份用户数据
 5. 考虑对敏感字段进行加密存储
 
+## 最近更新
+
+### 2026-01-24
+- **新增** `LIGHTSAIL_DEPLOY.md`：AWS Lightsail 部署指南，方便将后端服务一键部署到海外云服务器。
+- **修改** `backend/Dockerfile`：移除清华大学 PyPI 镜像参数，改用官方 PyPI 源，以适配海外服务器的网络环境。
+
+更完整的历史记录请参阅 [CHANGELOG.md](./CHANGELOG.md)。
+
 ## 许可证
 
 MIT License
